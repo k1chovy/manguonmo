@@ -1,0 +1,32 @@
+<% if @user && @user.errors.any? %>
+  <div class="alert alert-danger">
+    <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with(model: @user, local: true, class: "row g-3") do |form| %>
+  <h1 class="text-center mb-4">Đăng Ký Tài Khoản</h1>
+  
+  <div class="col-12">
+    <%= form.label :email_address, "Email", class: "form-label" %>
+    <%= form.text_field :email_address, class: "form-control", placeholder: "Nhập email của bạn" %>
+  </div>
+
+  <div class="col-12">
+    <%= form.label :password, "Mật khẩu", class: "form-label" %>
+    <%= form.password_field :password, class: "form-control", placeholder: "Nhập mật khẩu của bạn" %>
+  </div>
+
+  <div class="col-12">
+    <%= form.label :password_confirmation, "Xác nhận mật khẩu", class: "form-label" %>
+    <%= form.password_field :password_confirmation, class: "form-control", placeholder: "Xác nhận mật khẩu" %>
+  </div>
+
+  <div class="col-12 text-end">
+    <%= form.submit "Đăng Ký", class: "btn btn-primary" %>
+  </div>
+<% end %>

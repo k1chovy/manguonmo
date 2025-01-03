@@ -1,0 +1,6 @@
+<h1><%= @post.title %></h1>
+<p><%= @post.content %></p>
+
+<%= link_to "Sửa", edit_post_path(@post), class: "btn btn-warning" %>
+<%= link_to "Xóa", post_path(@post), method: :delete, data: { confirm: "Bạn có chắc chắn muốn xóa bài viết này?" }, class: "btn btn-danger" %>
+<%= link_to "Quay lại", posts_path, class: "btn btn-secondary" %>

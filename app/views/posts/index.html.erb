@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blog Posts</title>
+  <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" %>
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Blog Posts</h1>
+
+    <!-- Thêm Nút Tài Khoản và Đăng Ký Tài Khoản -->
+    <div class="text-end mb-4">
+      <%= link_to 'Tài Khoản', users_path, class: 'btn btn-primary me-2' %>
+      <%= link_to 'Đăng Ký Tài Khoản', new_user_path, class: 'btn btn-success' %>
+    </div>
+
+    <!-- Thông báo (nếu có) -->
+    <% if flash[:notice] %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= flash[:notice] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
+    <!-- Danh sách bài viết -->
+    <table class="table table-bordered bg-white shadow-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @posts.each do |post| %>
+          <tr>
+            <td><%= post.title %></td>
+            <td>
+              <% if params[:id].to_i == post.id %>
+                <!-- Form chỉnh sửa -->
+                <div class="p-3 bg-light border rounded">
+                  <%= form_with(model: post, local: true, class: "row g-3") do |form| %>
+                    <div class="col-12">
+                      <%= form.label :title, "Title", class: "form-label" %>
+                      <%= form.text_field :title, class: "form-control" %>
+                    </div>
+                    <div class="col-12">
+                      <%= form.label :content, "Content", class: "form-label" %>
+                      <%= form.text_area :content, rows: 3, class: "form-control" %>
+                    </div>
+                    <div class="col-12 text-end">
+                      <%= form.submit "Update", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <!-- Nút hành động -->
+                <%= link_to "Edit", posts_path(id: post.id), class: "btn btn-sm btn-warning me-2" %>
+              <% end %>
+                <%= link_to "Delete", post_path(post), method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this post?" }, class: "btn btn-sm btn-danger", id: "post_#{post.id}" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <!-- Form tạo bài viết mới -->
+    <div class="mt-5 p-4 bg-white shadow-sm rounded">
+      <h2>Create New Post</h2>
+      <%= form_with(model: @post || Post.new, local: true, class: "row g-3") do |form| %>
+        <div class="col-12">
+          <%= form.label :title, "Title", class: "form-label" %>
+          <%= form.text_field :title, class: "form-control" %>
+        </div>
+        <div class="col-12">
+          <%= form.label :content, "Content", class: "form-label" %>
+          <%= form.text_area :content, rows: 3, class: "form-control" %>
+        </div>
+        <div class="col-12 text-end">
+          <%= form.submit "Create Post", class: "btn btn-success" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" %>
+</body>
+</html>
