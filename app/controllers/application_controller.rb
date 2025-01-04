@@ -1,25 +1,13 @@
 class ApplicationController < ActionController::Base
   include Authentication
-  def index
-    @posts = Post.all
-  end
 
-  def new
-    @post = Post.new
-  end
-
-  def create
-    @post = Post.new(post_params)
-    if @post.save
-      redirect_to posts_path, notice: 'Post was successfully created.'
-    else
-      render :new
-    end
-  end
+  before_action :require_login
 
   private
 
-  def post_params
-    params.require(:post).permit(:title, :image, :content)
+  def require_login
+    unless session[:user_id]
+      redirect_to new_session_path, alert: "Vui lòng đăng nhập để tiếp tục."
+    end
   end
 end

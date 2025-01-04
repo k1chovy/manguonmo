@@ -1,21 +1,23 @@
 class SessionsController < ApplicationController
-  allow_unauthenticated_access only: %i[ new create ]
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_url, alert: "Try again later." }
+  skip_before_action :require_login, only: [:new, :create]
 
   def new
+    # Hiển thị form đăng nhập
   end
 
   def create
-    if user = User.authenticate_by(params.permit(:email_address, :password))
-      start_new_session_for user
-      redirect_to after_authentication_url
+    user = User.find_by(email_address: params[:email_address])
+    if user&.authenticate(params[:password])
+      session[:user_id] = user.id
+      redirect_to root_path, notice: "Đăng nhập thành công!"
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      flash.now[:alert] = "Email hoặc mật khẩu không đúng."
+      render :new
     end
   end
 
   def destroy
-    terminate_session
-    redirect_to new_session_path
+    session[:user_id] = nil
+    redirect_to new_session_path, notice: "Đăng xuất thành công!"
   end
 end
