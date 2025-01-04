@@ -9,9 +9,20 @@
   </thead>
   <tbody>
     <% @users.each do |user| %>
-      <tr>
+      <tr id="user_<%= user.id %>">
         <td><%= user.email_address %></td>
         <td><%= user.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+        <td class="d-flex gap-2">
+          <!-- Nút Sửa -->
+          <%= link_to "Sửa", edit_user_path(user), class: "btn btn-warning btn-sm" %>
+
+          <!-- Nút Xóa -->
+          <%= link_to "Xóa tài khoản", user_path(user), 
+                      method: :delete, 
+                      remote: true, 
+                      data: { turbo_confirm: "Bạn có chắc chắn muốn xóa tài khoản này?" }, 
+                      class: "btn btn-danger btn-sm" %>
+        </td>
       </tr>
     <% end %>
   </tbody>

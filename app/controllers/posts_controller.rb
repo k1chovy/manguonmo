@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  before_action :set_post, only: [:edit, :update, :destroy, :show]
+
   def index
     @posts = Post.all
   end
@@ -9,6 +11,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
+    @post.user = current_user  # Thêm người dùng vào bài viết
     if @post.save
       redirect_to posts_path, notice: "Tạo bài viết thành công!"
     else
@@ -16,12 +19,9 @@ class PostsController < ApplicationController
     end
   end
 
-  def edit
-    @post = Post.find(params[:id])
-  end
+  def edit; end
 
   def update
-    @post = Post.find(params[:id])
     if @post.update(post_params)
       redirect_to posts_path, notice: "Cập nhật bài viết thành công!"
     else
@@ -30,25 +30,30 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    @post = Post.find(params[:id])
-    @post.destroy
-  
-    respond_to do |format|
-      format.html { redirect_to posts_path, notice: "Xóa bài viết thành công" }
-      format.js   # Xử lý phản hồi AJAX qua destroy.js.erb
+    if @post.destroy
+      respond_to do |format|
+        format.html { redirect_to posts_path, notice: "Xóa bài viết thành công!" }
+        format.js   # Kích hoạt destroy.js.erb
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to posts_path, alert: "Không thể xóa bài viết!" }
+        format.js   # Xử lý lỗi nếu cần
+      end
     end
   end
-  
-  def show
-    @post = Post.find(params[:id])
-  end
-  
+
+  def show; end
 
   private
 
+  # Thiết lập @post cho các action cần dùng
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  # Chỉ cho phép các tham số hợp lệ
   def post_params
     params.require(:post).permit(:title, :content, :image)
   end
-  allow_unauthenticated_access only: %i[ index show ]
-  # ...
 end

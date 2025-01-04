@@ -1,6 +1,12 @@
-<h1><%= @post.title %></h1>
-<p><%= @post.content %></p>
+<h1 class="mb-4"><%= @post.title %></h1>
+<p class="mb-4"><%= @post.content %></p>
 
-<%= link_to "Sửa", edit_post_path(@post), class: "btn btn-warning" %>
-<%= link_to "Xóa", post_path(@post), method: :delete, data: { confirm: "Bạn có chắc chắn muốn xóa bài viết này?" }, class: "btn btn-danger" %>
-<%= link_to "Quay lại", posts_path, class: "btn btn-secondary" %>
+<!-- Nút "Destroy" -->
+<%= button_to "Xóa bài viết", @post, 
+              method: :delete, 
+              class: "btn btn-danger btn-sm me-2", 
+              data: { turbo_confirm: "Bạn có chắc chắn muốn xóa bài viết này?" } %>
+
+<!-- Nút "Quay lại" -->
+<%= link_to "Quay lại", posts_path, 
+            class: "btn btn-secondary btn-sm" %>
