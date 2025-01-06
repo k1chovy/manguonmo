@@ -8,13 +8,23 @@ class ApplicationController < ActionController::Base
   def require_login
     Rails.logger.info "require_login: session[:user_id] = #{session[:user_id]}, path = #{request.path}"
 
-    # Nếu người dùng đã đăng nhập hoặc truy cập vào các route login/session
     if session[:user_id]
-      Rails.logger.info "User already logged in"
-    elsif controller_name == "sessions" && action_name.in?(["new", "create"])
-      Rails.logger.info "Skipping redirect for session actions to avoid loop"
+      Rails.logger.info "Người dùng đã đăng nhập: user_id=#{session[:user_id]}"
+    elsif exempted_paths.include?(request.path)
+      Rails.logger.info "Bỏ qua kiểm tra đăng nhập cho path: #{request.path}"
     else
+      Rails.logger.warn "Chuyển hướng đến trang đăng nhập từ path: #{request.path}"
       redirect_to login_path, alert: "Vui lòng đăng nhập để tiếp tục."
     end
+  end
+
+  # Các đường dẫn không yêu cầu đăng nhập
+  def exempted_paths
+    [
+      login_path,
+      new_session_path,
+      new_user_path,      # Đăng ký tài khoản
+      new_password_path,  # Yêu cầu đặt lại mật khẩu
+    ]
   end
 end
