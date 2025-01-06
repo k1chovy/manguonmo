@@ -1,12 +1,11 @@
 class SessionsController < ApplicationController
+  # Bỏ qua kiểm tra đăng nhập
   skip_before_action :require_login, only: [:new, :create]
 
   def new
-    # Kiểm tra nếu đã đăng nhập, chuyển hướng về trang chủ
+    # Chuyển hướng nếu người dùng đã đăng nhập
     if session[:user_id]
       redirect_to root_path, notice: "Bạn đã đăng nhập rồi!"
-    else
-      # Hiển thị form đăng nhập
     end
   end
 
